@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiTo - The Web4 RWA Companion</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+            color: #1c1c1e;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.55);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border: 1px solid rgba(209, 213, 219, 0.3);
+            border-radius: 1.5rem;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 40px 0 rgba(31, 38, 135, 0.1);
+        }
+
+        .dark-glass-card {
+            background: rgba(28, 28, 30, 0.7);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.5rem;
+            color: #f5f5f7;
+            transition: all 0.3s ease;
+        }
+        
+        .dark-glass-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 40px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .section-title {
+            font-weight: 800;
+            font-size: 3rem;
+            line-height: 1.2;
+            text-align: center;
+            margin-bottom: 1rem;
+            letter-spacing: -0.05em;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.125rem;
+            color: #636366;
+            max-width: 48rem;
+            margin: 0 auto 3rem auto;
+        }
+
+        .aurora-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .aurora-bg::before, .aurora-bg::after {
+            content: '';
+            position: absolute;
+            width: 800px;
+            height: 800px;
+            border-radius: 50%;
+            filter: blur(180px);
+            opacity: 0.15;
+            mix-blend-mode: multiply;
+        }
+
+        .aurora-bg::before {
+            background: linear-gradient(135deg, #a5b4fc, #845eee);
+            top: -300px;
+            left: -300px;
+            animation: moveAurora1 20s infinite alternate;
+        }
+
+        .aurora-bg::after {
+            background: linear-gradient(135deg, #d946ef, #f472b6);
+            bottom: -300px;
+            right: -300px;
+            animation: moveAurora2 20s infinite alternate;
+        }
+
+        @keyframes moveAurora1 {
+            from { transform: translate(0, 0) rotate(0deg); }
+            to { transform: translate(200px, 100px) rotate(180deg); }
+        }
+
+        @keyframes moveAurora2 {
+            from { transform: translate(0, 0) rotate(0deg); }
+            to { transform: translate(-200px, -100px) rotate(-180deg); }
+        }
+
+        .glossy-button {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .glossy-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        }
+
+        .primary-button {
+            background: linear-gradient(135deg, #2563eb, #581c87);
+        }
+        
+        .onion-logo {
+            filter: drop-shadow(0 0 15px rgba(167, 139, 250, 0.5));
+        }
+
+        /* Hero Animation */
+        .hero-animation-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            perspective: 1000px;
+        }
+        .hero-text {
+            font-size: 2.5rem;
+            font-weight: 800;
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards;
+        }
+        .hero-text:nth-child(1) { animation-delay: 0.5s; }
+        .hero-text:nth-child(3) { animation-delay: 1s; }
+        .hero-text:nth-child(5) { animation-delay: 1.5s; }
+
+        .d-onion-container {
+            animation: popIn 0.5s ease-out forwards;
+            position: relative;
+        }
+        .d-onion-img {
+            width: 150px;
+            height: 150px;
+            transition: transform 0.5s ease;
+        }
+        .d-onion-container:hover .d-onion-img {
+            transform: scale(1.1) rotate(-5deg);
+        }
+        .currency-icon {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.8);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            animation: float 4s ease-in-out infinite;
+        }
+        .currency-icon:nth-child(2) { top: -10%; left: 10%; animation-delay: 0s; }
+        .currency-icon:nth-child(3) { top: 20%; left: -25%; animation-delay: 1s; }
+        .currency-icon:nth-child(4) { top: 70%; left: -15%; animation-delay: 2s; }
+        .currency-icon:nth-child(5) { top: -10%; right: 10%; animation-delay: 0.5s; }
+        .currency-icon:nth-child(6) { top: 20%; right: -25%; animation-delay: 1.5s; }
+        .currency-icon:nth-child(7) { top: 70%; right: -15%; animation-delay: 2.5s; }
+
+        @keyframes popIn {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+
+    </style>
+</head>
+<body class="antialiased">
+    <div class="relative min-h-screen overflow-x-hidden">
+        <div class="aurora-bg"></div>
+
+        <!-- Header -->
+        <header class="sticky top-0 z-50 p-4">
+            <nav class="container mx-auto px-6 py-2 flex justify-between items-center glass-card">
+                <div class="flex items-center gap-3">
+                     <img src="https://i.ibb.co/GHYyCg4/image.png" alt="D'Onion Logo" class="h-10 w-10 onion-logo"/>
+                    <div class="text-3xl font-bold text-slate-900 tracking-tighter">DiTo<span class="text-blue-600">.</span></div>
+                </div>
+                <div>
+                    <a href="#" class="bg-black/80 text-white font-semibold px-6 py-3 rounded-full glossy-button hover:bg-black">Launch Mainnet App</a>
+                </div>
+            </nav>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="py-24 md:py-32 text-center">
+            <div class="container mx-auto px-6">
+                <div class="hero-animation-container">
+                    <div class="hero-text bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-violet-500">Digitalise</div>
+                    <div class="d-onion-container">
+                        <img src="https://i.ibb.co/GHYyCg4/image.png" alt="D'Onion NFT" class="d-onion-img" />
+                        <div class="currency-icon">₹</div>
+                        <div class="currency-icon">$</div>
+                        <div class="currency-icon">€</div>
+                        <div class="currency-icon">¥</div>
+                        <div class="currency-icon">£</div>
+                        <div class="currency-icon">₩</div>
+                    </div>
+                    <div class="hero-text bg-clip-text text-transparent bg-gradient-to-r from-violet-500 to-blue-500">Tokenise</div>
+                    <div class="hero-text bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-teal-500">Monetise</div>
+                </div>
+                 <h1 class="text-5xl md:text-7xl font-black mb-4 tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-blue-700">
+                    From Dormant to Dynamic.<br/>This is Web4.
+                </h1>
+                <p class="text-lg md:text-xl text-slate-700 max-w-3xl mx-auto mb-8">
+                    Welcome to a Decentralized Society where every asset, physical or digital, is unlocked. DiTo is your open-source RWA Companion, built with AI, for a world where value flows freely. This is an unaudited vision, about to become reality.
+                </p>
+                <div class="flex justify-center gap-4">
+                    <a href="#features" class="primary-button text-white font-semibold px-8 py-4 rounded-full glossy-button">Explore Features</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- RWA Integrals Section -->
+        <section class="py-12">
+            <div class="container mx-auto px-6">
+                 <div class="glass-card p-8">
+                    <div class="flex justify-around items-center gap-8 flex-wrap">
+                        <div class="text-center text-slate-600 group">
+                            <svg class="w-16 h-16 mx-auto mb-2 text-slate-500 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 21V10a2 2 0 012-2h2a2 2 0 012 2v11m-6 0h6m-6 0H6a2 2 0 01-2-2v-4a2 2 0 012-2h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V19a2 2 0 01-2 2h-1m-6 0a2 2 0 002 2h6a2 2 0 002-2m0 0V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"></path></svg>
+                            <p class="font-semibold">Real Estate</p>
+                        </div>
+                        <div class="text-center text-slate-600 group">
+                            <svg class="w-16 h-16 mx-auto mb-2 text-slate-500 group-hover:text-purple-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                            <p class="font-semibold">Private Credit</p>
+                        </div>
+                        <div class="text-center text-slate-600 group">
+                            <svg class="w-16 h-16 mx-auto mb-2 text-slate-500 group-hover:text-pink-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.657 7.343A8 8 0 0117.657 18.657z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.879 16.121A3 3 0 1014.12 11.88l-4.242 4.242z"></path></svg>
+                            <p class="font-semibold">Art & Collectibles</p>
+                        </div>
+                        <div class="text-center text-slate-600 group">
+                             <svg class="w-16 h-16 mx-auto mb-2 text-slate-500 group-hover:text-amber-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v.01M12 6v-1m0-1H9.5a2.5 2.5 0 00-2.312 1.642M12 6h2.5a2.5 2.5 0 012.312 1.642M12 18v-1m0 1v.01M12 20v-1m0 1H9.5a2.5 2.5 0 01-2.312-1.642M12 20h2.5a2.5 2.5 0 002.312-1.642M3 12h1m16 0h1M4.22 4.22l.707.707m14.142 14.142l.707.707M4.22 19.78l.707-.707m14.142-14.142l.707-.707"></path></svg>
+                            <p class="font-semibold">Infrastructure</p>
+                        </div>
+                         <div class="text-center text-slate-600 group">
+                            <svg class="w-16 h-16 mx-auto mb-2 text-slate-500 group-hover:text-green-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                            <p class="font-semibold">AI Personas</p>
+                        </div>
+                    </div>
+                 </div>
+            </div>
+        </section>
+
+        <!-- Available Features Section -->
+        <section id="features" class="py-20">
+            <div class="container mx-auto px-6">
+                <h2 class="section-title">Available at Launch</h2>
+                <p class="section-subtitle">Powerful, decentralized tools ready on day one. Built for the DeFi native on Nova Chain, our self-managed L3 rollup on Arbitrum Orbit.</p>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Card 1: Vouchers Trading -->
+                    <div class="glass-card p-8 text-center">
+                        <div class="mb-4 inline-block p-4 bg-blue-100 rounded-2xl"><svg class="w-12 h-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path></svg></div>
+                        <h3 class="text-2xl font-bold mb-2">Vouchers Trading</h3>
+                        <p class="text-slate-600">Turn forgotten gift cards and digital vouchers into liquid assets. A multi-billion dollar problem of lost value, solved on-chain.</p>
+                    </div>
+                    <!-- Card 2: Any Asset Trading -->
+                    <div class="glass-card p-8 text-center">
+                        <div class="mb-4 inline-block p-4 bg-purple-100 rounded-2xl"><svg class="w-12 h-12 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg></div>
+                        <h3 class="text-2xl font-bold mb-2">Yield-Bearing Asset Trading</h3>
+                        <p class="text-slate-600">Tokenize and trade any RWA. With ETH as the core payment rail, your funds in escrow are automatically deployed to generate yield. Your money works for you, always.</p>
+                    </div>
+                    <!-- Card 3: Unsecured Loans -->
+                    <div class="glass-card p-8 text-center">
+                        <div class="mb-4 inline-block p-4 bg-pink-100 rounded-2xl"><svg class="w-12 h-12 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg></div>
+                        <h3 class="text-2xl font-bold mb-2">Unsecured Loans via OCCSE</h3>
+                        <p class="text-slate-600">Leverage your on-chain reputation via Polygon ID & Lens Protocol with our Onchain Credibility Score Engine. Access unsecured loans based on your digital identity.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- RWA Market Opportunity Section -->
+        <section class="py-20">
+            <div class="container mx-auto px-6">
+                <h2 class="section-title">The Trillion-Dollar Opportunity in Plain Sight</h2>
+                <p class="section-subtitle">Real World Asset tokenization is not a niche market; it's the next frontier. We are unlocking liquidity for the world's largest asset classes.</p>
+                <div class="glass-card p-8 md:p-12">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 text-center">
+                        <div>
+                            <div class="text-5xl font-black text-blue-600 mb-2" data-target="12.2">0</div>
+                            <h4 class="text-xl font-semibold text-slate-800">Billion TVL Today</h4>
+                            <p class="text-slate-500">Current RWA Total Value Locked. <br/><a href="https://defillama.com/rw" target="_blank" class="text-blue-600 hover:underline">Source: DefiLlama</a></p>
+                        </div>
+                        <div>
+                            <div class="text-5xl font-black text-purple-600 mb-2" data-target="16">0</div>
+                            <h4 class="text-xl font-semibold text-slate-800">Trillion Market by 2030</h4>
+                            <p class="text-slate-500">Projected size of the tokenized asset market. <br/><a href="https://www.bcg.com/publications/2022/asset-tokenization-value" target="_blank" class="text-blue-600 hover:underline">Source: BCG</a></p>
+                        </div>
+                        <div>
+                            <div class="text-5xl font-black text-pink-600 mb-2" data-target="1300">0</div>
+                            <h4 class="text-xl font-semibold text-slate-800">X Potential Growth</h4>
+                            <p class="text-slate-500">The potential expansion in this decade alone.</p>
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-bold text-center mb-8">Unlocking Global Assets</h3>
+                    <div class="h-96"><canvas id="rwaMarketChart"></canvas></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Near-Future Launches Section -->
+        <section class="py-20 bg-slate-900 text-white">
+            <div class="container mx-auto px-6">
+                <h2 class="section-title">The Near Future, Built in Chennai for the World</h2>
+                <p class="section-subtitle text-slate-400">Our roadmap is ambitious and transparent. Here's what we're building next to expand the DeSoc economy.</p>
+                <div class="grid md:grid-cols-3 gap-8">
+                     <!-- Card 1: DCCE -->
+                    <div class="dark-glass-card p-8 text-center">
+                        <div class="mb-4 inline-block p-4 bg-slate-700 rounded-2xl"><svg class="w-12 h-12 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg></div>
+                        <h3 class="text-2xl font-bold mb-2">DCCE: AI Persona Economy</h3>
+                        <p class="text-slate-300">The Digital Content Compliance Engine. A framework to tokenize and trade AI personas with a "call-sheet" model, ensuring exclusive use and creating a new, transparent market for digital identity.</p>
+                    </div>
+                    <!-- Card 2: DQF -->
+                    <div class="dark-glass-card p-8 text-center">
+                         <div class="mb-4 inline-block p-4 bg-slate-700 rounded-2xl"><svg class="w-12 h-12 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
+                        <h3 class="text-2xl font-bold mb-2">DQF for RWA</h3>
+                        <p class="text-slate-300">A Decentralized Quality Framework. Community-driven standards and verification for RWAs, increasing trust and reducing friction for high-value assets.</p>
+                    </div>
+                    <!-- Card 3: Gamification -->
+                    <div class="dark-glass-card p-8 text-center">
+                         <div class="mb-4 inline-block p-4 bg-slate-700 rounded-2xl"><img src="https://i.ibb.co/GHYyCg4/image.png" class="w-12 h-12" alt="D'Onion NFT"/></div>
+                        <h3 class="text-2xl font-bold mb-2">D'Onion NFT Gamification</h3>
+                        <p class="text-slate-300">Our genesis NFT collection. D'Onions will be your key to enhanced platform features, boosted rewards, and a greater say in governance.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tokenomics & Launch Section -->
+        <section class="py-20">
+            <div class="container mx-auto px-6">
+                <h2 class="section-title">Ethereum Economic Inauguration (EEI)</h2>
+                <p class="section-subtitle">A radical approach to tokenomics and launch. Fair, transparent, and community-first from day one. This is how we build a decentralized economy together.</p>
+                <div class="glass-card p-8 md:p-12">
+                    <div class="grid md:grid-cols-2 gap-12 items-center">
+                        <!-- Tokenomics Infographic -->
+                        <div>
+                            <h3 class="text-3xl font-bold mb-6">DiToM Tokenomics</h3>
+                            <div class="relative">
+                                <canvas id="tokenomicsChart"></canvas>
+                                <div class="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
+                                    <span class="text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">369M</span>
+                                    <p class="text-slate-600 font-semibold">Total Supply</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Launch Strategy -->
+                        <div class="space-y-8">
+                             <div>
+                                <h4 class="font-bold text-xl mb-2 flex items-center gap-2">
+                                    <img src="https://juicebox.money/assets/images/logo-icon.png" class="h-8 w-8" alt="Juicebox Logo">
+                                    Juicebox Launch on Ethereum
+                                </h4>
+                                <p class="text-slate-600">Our primary launch on Ethereum via Juicebox ensures a transparent and fair price discovery mechanism. All funds are controlled by the community from the start. <a href="https://juicebox.money/" target="_blank" class="text-blue-600 hover:underline">Learn More</a></p>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-xl mb-2 flex items-center gap-2">
+                                    <svg class="w-8 h-8 text-purple-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 3.965l-7 1.908v8.254l7 1.908 7-1.908V5.873l-7-1.908zM3 6.391l7-1.908 7 1.908v7.218l-7 1.908-7-1.908V6.39z"/></svg>
+                                    Meme Launches for Traction
+                                </h4>
+                                <p class="text-slate-600">To build massive awareness, we're launching companion meme coins on Solana & BSC via <a href="https://pump.fun" target="_blank" class="text-blue-600 hover:underline">pump.fun</a> and <a href="https://four.meme" target="_blank" class="text-blue-600 hover:underline">four.meme</a>. Proceeds will bootstrap DiToM liquidity, and meme coin holders can redeem for DiToM.</p>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-xl mb-2 flex items-center gap-2">
+                                     <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    Future Stablecoin Transition
+                                </h4>
+                                <p class="text-slate-600">A long-term vision to transition DiToM into an ETH-backed, DAO-governed stablecoin, creating a reliable medium of exchange for the DeSoc economy.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Regulatory & Governance Section -->
+        <section class="py-20 bg-white/50">
+            <div class="container mx-auto px-6">
+                <h2 class="section-title">Compliance & Governance: The Unaudited Path to Trust</h2>
+                <p class="section-subtitle">We are not waiting for permission. We are building for a future of regulated decentralization, with transparency and adaptability at our core.</p>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="glass-card p-8">
+                        <h3 class="text-2xl font-bold mb-4">Ready for a Regulated World</h3>
+                        <ul class="space-y-4 text-slate-600">
+                            <li class="flex items-start gap-3">
+                                <div class="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex-shrink-0 flex items-center justify-center font-bold mt-1">✓</div>
+                                <p><strong>COINS Act Ready xxTRaaS:</strong> Our Transaction Reporting and Analysis Service is designed to be jurisdiction-adaptive (e.g., `inTRaaS` for India), meeting future compliance needs without compromising the protocol's core.</p>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <div class="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex-shrink-0 flex items-center justify-center font-bold mt-1">✓</div>
+                                <p><strong>Preserving Blockchain Ethos:</strong> While direct fiat off-ramps are restricted in V1, on-chain transfers and liquidity remain fully permissionless, upholding the principles of self-custody championed by frameworks like India's proposed COINS Act.</p>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="glass-card p-8">
+                        <h3 class="text-2xl font-bold mb-4">The Path to Full Decentralization</h3>
+                         <ul class="space-y-4 text-slate-600">
+                            <li class="flex items-start gap-3">
+                                <div class="w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex-shrink-0 flex items-center justify-center font-bold mt-1">→</div>
+                                <p><strong>Multi-Sig to DAO:</strong> Initial multi-sig control ensures the founding vision is built. However, it's designed to be temporary. The ultimate power rests with the community.</p>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <div class="w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex-shrink-0 flex items-center justify-center font-bold mt-1">→</div>
+                                <p><strong>DAO Sovereignty:</strong> The DiToM DAO will have the power to remove the dev team from the multi-sig, transitioning the protocol to a fully community-owned and governed public good.</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="py-12">
+            <div class="container mx-auto px-6 text-center">
+                <div class="text-xl font-bold text-slate-900 tracking-tighter mb-2">
+                    DiTo<span class="text-blue-600">.</span>
+                </div>
+                <p class="text-sm text-slate-500">
+                    A Product of Zamora, an entity of zAEL Corporation, Chennai, India.
+                </p>
+                <p class="text-xs text-slate-400 mt-4">
+                    © 2025 DiTo Protocol. This is an unaudited, open-source project. Use at your own risk.
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Animated counter
+        const counters = document.querySelectorAll('[data-target]');
+        const speed = 200;
+
+        const animateCounter = (counter) => {
+            const target = +counter.getAttribute('data-target');
+            const updateCount = () => {
+                const count = +counter.innerText.replace(/,/g, '');
+                const inc = target / speed;
+                if (count < target) {
+                    counter.innerText = Math.ceil(count + inc).toLocaleString();
+                    setTimeout(updateCount, 10);
+                } else {
+                    counter.innerText = target.toLocaleString();
+                }
+            };
+            updateCount();
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounter(entry.target);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        counters.forEach(counter => {
+            observer.observe(counter);
+        });
+
+        // RWA Market Chart
+        const rwaCtx = document.getElementById('rwaMarketChart').getContext('2d');
+        const rwaMarketChart = new Chart(rwaCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Private Credit', 'Real Estate', 'Infrastructure', 'Private Equity', 'Collectibles'],
+                datasets: [{
+                    label: 'Potential Market Size (in Trillions USD)',
+                    data: [130, 80, 15, 12, 2],
+                    backgroundColor: 'rgba(37, 99, 235, 0.6)',
+                    borderColor: 'rgba(37, 99, 235, 1)',
+                    borderWidth: 2,
+                    borderRadius: 12,
+                    borderSkipped: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#1c1c1e',
+                        titleFont: { size: 16, weight: 'bold' },
+                        bodyFont: { size: 14 },
+                        padding: 12,
+                        cornerRadius: 10,
+                        callbacks: {
+                            label: (context) => `Potential: $${context.parsed.y} Trillion`
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { size: 12, weight: '500' }, color: '#334155' }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(200, 200, 200, 0.1)' },
+                        ticks: {
+                            font: { size: 12, weight: '500' },
+                            color: '#636366',
+                            callback: (value) => '$' + value + 'T'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Tokenomics Chart
+        const tokenomicsCtx = document.getElementById('tokenomicsChart').getContext('2d');
+        const tokenomicsChart = new Chart(tokenomicsCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Public Sale & Liquidity', 'Community & Ecosystem', 'Incubation Fund', 'Developer Allocation'],
+                datasets: [{
+                    data: [51, 30, 10, 9],
+                    backgroundColor: [
+                        'rgba(37, 99, 235, 0.7)',
+                        'rgba(167, 139, 250, 0.7)',
+                        'rgba(236, 72, 153, 0.7)',
+                        'rgba(107, 114, 128, 0.7)'
+                    ],
+                    borderColor: [
+                        '#2563eb',
+                        '#a78bfa',
+                        '#ec4899',
+                        '#6b7280'
+                    ],
+                    borderWidth: 2,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                cutout: '70%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#4b5563',
+                            font: {
+                                size: 14,
+                                weight: '500'
+                            },
+                            padding: 20
+                        }
+                    },
+                    tooltip: {
+                         callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed !== null) {
+                                    label += context.parsed + '%';
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
